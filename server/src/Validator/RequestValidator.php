@@ -1,15 +1,18 @@
 <?php
 
 namespace Validator;
+use InvalidArgumentException;
+use Service\ProductService;
 use Util\ConstantsUtil;
 use Util\JsonUtil;
 
 class RequestValidator
 {
-    private string $request;
-    private array $requestData;
+    private $request;
+    private $requestData;
     const GET = 'GET';
     const DELETE = 'DELETE';
+    const PRODUCTS = 'PRODUCTS';
 
     public function __construct($request)
     {
@@ -20,7 +23,6 @@ class RequestValidator
     {
         $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
 
-        $this->request['method'] = 'POST';
         if(in_array($this->request['method'], ConstantsUtil::TYPE_REQUEST, true)){
             $return = $this->directRequest();
         }
@@ -33,5 +35,24 @@ class RequestValidator
         if($this->request['method'] !== self::GET && $this->request['method'] !== self::DELETE){
             $this->requestData = JsonUtil::handleRequestBodyJson();
         }
+
+        $method = $this->request['method'];
+        return $this->$method();
+    }
+
+    private function get(){
+         $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
+         if(in_array($this->request['route'], ConstantsUtil::TYPE_GET, true)){
+             switch ($this->request['route']){
+                 case self::PRODUCTS:
+                     $ProductService = new ProductService($this->request);
+                     $return = $ProductService->validateGet();
+                     break;
+                 default:
+                     throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
+             }
+         }
+
+         return $return;
     }
 }

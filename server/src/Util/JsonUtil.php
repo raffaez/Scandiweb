@@ -2,10 +2,33 @@
 
 namespace Util;
 
-use http\Exception\InvalidArgumentException;
+
+use InvalidArgumentException;
 
 class JsonUtil
 {
+    public function handleReturnArray($return)
+    {
+        $data = [];
+        $data[ConstantsUtil::TYPE] = ConstantsUtil::TYPE_ERROR;
+
+        if((is_array($return) && count($return) > 0) || strlen($return) > 10){
+            $data[ConstantsUtil::TYPE] = ConstantsUtil::TYPE_SUCESS;
+            $data[ConstantsUtil::RESPONSE] = $return;
+        }
+
+        $this->returnJson($data);
+    }
+
+    private function returnJson($json)
+    {
+        header('Content-Type: application/json');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Access-Control-Allow-Methods: GET,POST,PUT,DELETE');
+        echo json_encode($json);
+        exit;
+    }
+
     public static function handleRequestBodyJson()
     {
         try {

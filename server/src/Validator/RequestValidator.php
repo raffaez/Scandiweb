@@ -40,7 +40,11 @@ class RequestValidator
         return $this->$method();
     }
 
-    private function get(){
+    /**
+     * @return mixed|string
+     */
+    private function get()
+    {
          $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
          if(in_array($this->request['route'], ConstantsUtil::TYPE_GET, true)){
              switch ($this->request['route']){
@@ -54,5 +58,22 @@ class RequestValidator
          }
 
          return $return;
+    }
+
+    private function delete()
+    {
+        $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
+        if(in_array($this->request['route'], ConstantsUtil::TYPE_DELETE, true)){
+            switch ($this->request['route']){
+                case self::PRODUCTS:
+                    $ProductService = new ProductService($this->request);
+                    $return = $ProductService->validateDelete();
+                    break;
+                default:
+                    throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
+            }
+        }
+
+        return $return;
     }
 }

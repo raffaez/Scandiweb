@@ -24,15 +24,23 @@ class ProductRepository
      * @param $type
      * @return int
      */
-    public function insertProduct($sku, $name, $price, $type): int
+    public function insertProduct(array $product): int
     {
-        $queryInsert = "INSERT INTO " . self::TABLE . " (sku, name, price, type) VALUES (:sku, :name, :price, :type)";
+        $queryInsert = "INSERT INTO "
+                            . self::TABLE .
+                            " (sku, name, price, type, size, weight, dimensions) 
+                        VALUES 
+                            (:sku, :name, :price, :type, :size, :weight, :dimensions)";
         $this->MySQL->getDb()->beginTransaction();
         $stmt = $this->MySQL->getDb()->prepare($queryInsert);
-        $stmt->bindParam(":sku", $sku);
-        $stmt->bindParam(":name", $name);
-        $stmt->bindParam(":price", $price);
-        $stmt->bindParam(":type", $type);
+        $stmt->bindParam(":sku", $product["sku"]);
+        $stmt->bindParam(":name", $product["name"]);
+        $stmt->bindParam(":price", $product["price"]);
+        $stmt->bindParam(":type", $product["type"]);
+        $stmt->bindParam(":size", $product["size"]);
+        $stmt->bindParam(":weight", $product["weight"]);
+        $stmt->bindParam(":dimensions", $product["dimensions"]);
+
         $stmt->execute();
 
         return $stmt->rowCount();
@@ -43,14 +51,28 @@ class ProductRepository
      * @param $data
      * @return int
      */
-    public function updateProduct($sku, $data): int
+    public function updateProduct(string $sku, array $product): int
     {
-        $queryUpdate = "UPDATE " . self::TABLE . " SET name = :name, price = :price WHERE sku = :sku";
+        $queryUpdate = "UPDATE "
+                            . self::TABLE .
+                        " SET 
+                            name = :name,
+                            price = :price,
+                            size = :size,
+                            weight = :weight,
+                            dimensions = :dimensions
+                            
+                        WHERE 
+                            sku = :sku";
         $this->MySQL->getDb()->beginTransaction();
         $stmt = $this->MySQL->getDb()->prepare($queryUpdate);
         $stmt->bindParam(":sku", $sku);
-        $stmt->bindParam(":name", $data['name']);
-        $stmt->bindParam(":price", $data['price']);
+        $stmt->bindParam(":name", $product["name"]);
+        $stmt->bindParam(":price", $product["price"]);
+        $stmt->bindParam(":size", $product["size"]);
+        $stmt->bindParam(":weight", $product["weight"]);
+        $stmt->bindParam(":dimensions", $product["dimensions"]);
+
         $stmt->execute();
 
         return $stmt->rowCount();

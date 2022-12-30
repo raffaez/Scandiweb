@@ -23,8 +23,8 @@ class ProductService
     public function __construct($data = [])
     {
         $this->data = $data;
-        $this->ProductRepository = new ProductRepository()
-;    }
+        $this->ProductRepository = new ProductRepository();
+    }
 
     /**
      * @return mixed
@@ -165,15 +165,18 @@ class ProductService
      */
     private function create()
     {
-        [$sku, $name, $price, $type] = [
-                                        $this->dataRequestBody['sku'],
-                                        $this->dataRequestBody['name'],
-                                        $this->dataRequestBody['price'],
-                                        $this->dataRequestBody['type']
-                                        ];
+        $product = array(
+            "sku" => htmlspecialchars(strip_tags($this->dataRequestBody['sku'])),
+            "name" => htmlspecialchars(strip_tags($this->dataRequestBody['name'])),
+            "price" => htmlspecialchars(strip_tags($this->dataRequestBody['price'])),
+            "type" => htmlspecialchars(strip_tags($this->dataRequestBody['type'])),
+            "weight" => (float)htmlspecialchars(strip_tags($this->dataRequestBody['weight'])) ?? 0,
+            "size" => (float)htmlspecialchars(strip_tags($this->dataRequestBody['size'])) ?? 0,
+            "dimensions" => htmlspecialchars(strip_tags($this->dataRequestBody['dimensions'])) ?? ''
+        );
 
-        if($sku && $name && $price && $type){
-            if($this->ProductRepository->insertProduct($sku, $name, $price, $type)){
+        if($product["sku"] && $product["name"] && $product["price"] && $product["type"]){
+            if($this->ProductRepository->insertProduct($product)){
                 $insertedId = $this->ProductRepository->getMySQL()->getDb()->lastInsertId();
                 $this->ProductRepository->getMySQL()->getDb()->commit();
                 return ['insertedId' => $insertedId];
@@ -192,7 +195,15 @@ class ProductService
      */
     private function update()
     {
-        if($this->ProductRepository->updateProduct($this->data['sku'], $this->dataRequestBody) > 0){
+        $product = array(
+            "name" => htmlspecialchars(strip_tags($this->dataRequestBody['name'])),
+            "price" => htmlspecialchars(strip_tags($this->dataRequestBody['price'])),
+            "weight" => (float)htmlspecialchars(strip_tags($this->dataRequestBody['weight'])) ?? 0,
+            "size" => (float)htmlspecialchars(strip_tags($this->dataRequestBody['size'])) ?? 0,
+            "dimensions" => htmlspecialchars(strip_tags($this->dataRequestBody['dimensions'])) ?? ''
+        );
+
+        if($this->ProductRepository->updateProduct($this->data['sku'], $product) > 0){
             $this->ProductRepository->getMySQL()->getDb()->commit();
             return ConstantsUtil::MSG_SUCCESS_UPDATE;
         }

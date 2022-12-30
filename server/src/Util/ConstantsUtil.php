@@ -28,7 +28,7 @@ abstract class ConstantsUtil
     /* RESOURCE PRODUCTS */
     public const MSG_ERROR_SKU_NECESSARY = 'Sku necessary!';
     public const MSG_ERROR_TAKEN_SKU = 'This sku is already taken!';
-    public const MSG_ERROR_LOGIN_SENHA_OBRIGATORIO = 'Login e Senha s�o obrigat�rios!';
+    public const MSG_ERROR_INSUFFICIENT_DATA = 'Insufficient data!';
 
     /* RETURN JSON */
     const TYPE_SUCESS = 'sucess';

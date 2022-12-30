@@ -9,7 +9,7 @@ use Util\JsonUtil;
 class RequestValidator
 {
     private $request;
-    private $requestData;
+    private $requestData = [];
     const GET = 'GET';
     const DELETE = 'DELETE';
     const PRODUCTS = 'PRODUCTS';
@@ -68,6 +68,24 @@ class RequestValidator
                 case self::PRODUCTS:
                     $ProductService = new ProductService($this->request);
                     $return = $ProductService->validateDelete();
+                    break;
+                default:
+                    throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
+            }
+        }
+
+        return $return;
+    }
+
+    private function post()
+    {
+        $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
+        if(in_array($this->request['route'], ConstantsUtil::TYPE_POST, true)){
+            switch ($this->request['route']){
+                case self::PRODUCTS:
+                    $ProductService = new ProductService($this->request);
+                    $ProductService->setDataRequestBody($this->requestData);
+                    $return = $ProductService->validatePost();
                     break;
                 default:
                     throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);

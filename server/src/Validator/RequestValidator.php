@@ -94,4 +94,22 @@ class RequestValidator
 
         return $return;
     }
+
+    private function put()
+    {
+        $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
+        if(in_array($this->request['route'], ConstantsUtil::TYPE_PUT, true)){
+            switch ($this->request['route']){
+                case self::PRODUCTS:
+                    $ProductService = new ProductService($this->request);
+                    $ProductService->setDataRequestBody($this->requestData);
+                    $return = $ProductService->validatePut();
+                    break;
+                default:
+                    throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
+            }
+        }
+
+        return $return;
+    }
 }

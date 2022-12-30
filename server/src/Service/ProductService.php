@@ -11,7 +11,8 @@ class ProductService
     public const TABLE = 'tb_products';
     public const GET_RESOURCES = ['get'];
     public const DELETE_RESOURCES = ['delete'];
-    public const POST_RESOURCES = ['post'];
+    public const POST_RESOURCES = ['create'];
+    public const PUT_RESOURCES = ['update'];
     private array $data;
     private $dataRequestBody;
     private object $ProductRepository;
@@ -93,6 +94,31 @@ class ProductService
     }
 
     /**
+     * @return mixed
+     */
+    public function validatePut()
+    {
+        $return = null;
+        $resource = $this->data['resource'];
+
+        if(in_array($resource, self::PUT_RESOURCES, true)) {
+            if($this->data['sku'] !== null){
+                $return = $this->$resource();
+            } else {
+                throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_SKU_NECESSARY);
+            }
+        } else {
+            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
+        }
+
+        if($return === null){
+            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_GENERIC);
+        }
+
+        return $return;
+    }
+
+    /**
      * @param $requestData
      * @return void
      */
@@ -128,7 +154,7 @@ class ProductService
     /**
      * @return array
      */
-    private function post()
+    private function create()
     {
         [$sku, $name, $price, $type] = [
                                         $this->dataRequestBody['sku'],
@@ -150,5 +176,16 @@ class ProductService
         }
 
         throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_INSUFFICIENT_DATA);
+    }
+
+    private function update()
+    {
+        if($this->ProductRepository->updateProduct($this->data['sku'], $this->dataRequestBody) > 0){
+            $this->ProductRepository->getMySQL()->getDb()->commit();
+            return ConstantsUtil::MSG_SUCCESS_UPDATE;
+        }
+        $this->ProductRepository->getMySQL()->getDb()->rollback();
+
+        throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_NOT_ALTERED);
     }
 }

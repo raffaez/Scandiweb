@@ -24,7 +24,8 @@ class ProductRepository
      * @param $type
      * @return int
      */
-    public function insertProduct($sku, $name, $price, $type){
+    public function insertProduct($sku, $name, $price, $type)
+    {
         $queryInsert = "INSERT INTO " . self::TABLE . " (sku, name, price, type) VALUES (:sku, :name, :price, :type)";
         $this->MySQL->getDb()->beginTransaction();
         $stmt = $this->MySQL->getDb()->prepare($queryInsert);
@@ -32,6 +33,19 @@ class ProductRepository
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":price", $price);
         $stmt->bindParam(":type", $type);
+        $stmt->execute();
+
+        return $stmt->rowCount();
+    }
+
+    public function updateProduct($sku, $data)
+    {
+        $queryUpdate = "UPDATE " . self::TABLE . " SET name = :name, price = :price WHERE sku = :sku";
+        $this->MySQL->getDb()->beginTransaction();
+        $stmt = $this->MySQL->getDb()->prepare($queryUpdate);
+        $stmt->bindParam(":sku", $sku);
+        $stmt->bindParam(":name", $data['name']);
+        $stmt->bindParam(":price", $data['price']);
         $stmt->execute();
 
         return $stmt->rowCount();

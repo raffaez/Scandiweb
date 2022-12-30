@@ -2,13 +2,14 @@
 
 use Util\ConstantsUtil;
 use Util\JsonUtil;
+use Util\RoutesUtil;
 use Validator\RequestValidator;
 
 include 'bootstrap.php';
 
 
 try {
-    $RequestValidator = new RequestValidator(\Util\RoutesUtil::getRoutes());
+    $RequestValidator = new RequestValidator(RoutesUtil::getRoutes());
     $return = $RequestValidator->processRequest();
 
     $JsonUtil = new JsonUtil();
@@ -17,6 +18,6 @@ try {
     echo json_encode([
         ConstantsUtil::TYPE => ConstantsUtil::TYPE_ERROR,
         ConstantsUtil::RESPONSE => utf8_encode($e->getMessage())
-    ]);
+    ], JSON_THROW_ON_ERROR);
     exit;
 }

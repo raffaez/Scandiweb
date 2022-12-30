@@ -4,6 +4,9 @@ namespace Util;
 
 class RoutesUtil
 {
+    /**
+     * @return array
+     */
     public static function getRoutes(){
         $urls = self::getUrls();
         $request = [];
@@ -15,6 +18,9 @@ class RoutesUtil
         return $request;
     }
 
+    /**
+     * @return false|string[]
+     */
     public static function getUrls(){
         $uri = str_replace("/" . DIR_PROJECT, '', $_SERVER["REQUEST_URI"]);
         return explode("/", trim($uri, "/"));

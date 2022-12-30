@@ -14,11 +14,17 @@ class RequestValidator
     const DELETE = 'DELETE';
     const PRODUCTS = 'PRODUCTS';
 
+    /**
+     * @param $request
+     */
     public function __construct($request)
     {
         $this->request = $request;
     }
 
+    /**
+     * @return mixed|string
+     */
     public function processRequest()
     {
         $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
@@ -30,6 +36,9 @@ class RequestValidator
         return $return;
     }
 
+    /**
+     * @return mixed
+     */
     private function directRequest()
     {
         if($this->request['method'] !== self::GET && $this->request['method'] !== self::DELETE){
@@ -60,6 +69,9 @@ class RequestValidator
          return $return;
     }
 
+    /**
+     * @return mixed|string
+     */
     private function delete()
     {
         $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
@@ -77,6 +89,9 @@ class RequestValidator
         return $return;
     }
 
+    /**
+     * @return mixed|string
+     */
     private function post()
     {
         $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);
@@ -95,6 +110,9 @@ class RequestValidator
         return $return;
     }
 
+    /**
+     * @return mixed|string
+     */
     private function put()
     {
         $return = utf8_encode(ConstantsUtil::MSG_ERROR_ROUTE_TYPE);

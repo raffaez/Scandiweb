@@ -7,19 +7,27 @@ use InvalidArgumentException;
 
 class JsonUtil
 {
+    /**
+     * @param $return
+     * @return void
+     */
     public function handleReturnArray($return)
     {
         $data = [];
         $data[ConstantsUtil::TYPE] = ConstantsUtil::TYPE_ERROR;
 
         if((is_array($return) && count($return) > 0) || strlen($return) > 10){
-            $data[ConstantsUtil::TYPE] = ConstantsUtil::TYPE_SUCESS;
+            $data[ConstantsUtil::TYPE] = ConstantsUtil::TYPE_SUCCESS;
             $data[ConstantsUtil::RESPONSE] = $return;
         }
 
         $this->returnJson($data);
     }
 
+    /**
+     * @param $json
+     * @return void
+     */
     private function returnJson($json)
     {
         header('Content-Type: application/json');
@@ -29,6 +37,9 @@ class JsonUtil
         exit;
     }
 
+    /**
+     * @return array|void
+     */
     public static function handleRequestBodyJson()
     {
         try {

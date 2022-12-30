@@ -23,7 +23,7 @@ class MySQL
     /**
      * @return PDO
      */
-    public function setDB()
+    public function setDB(): PDO
     {
         try {
             return new PDO(
@@ -39,7 +39,7 @@ class MySQL
      * @param $sku
      * @return string
      */
-    public function delete($table, $sku)
+    public function delete($table, $sku): string
     {
         $queryDelete = 'DELETE FROM ' . $table . ' WHERE sku = :sku';
         if ($table && $sku) {
@@ -61,7 +61,7 @@ class MySQL
      * @param $table
      * @return array
      */
-    public function getAll($table)
+    public function getAll($table): array
     {
         if ($table) {
             $query = 'SELECT * FROM ' . $table;

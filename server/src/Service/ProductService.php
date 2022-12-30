@@ -14,7 +14,7 @@ class ProductService
     public const POST_RESOURCES = ['create'];
     public const PUT_RESOURCES = ['update'];
     private array $data;
-    private $dataRequestBody;
+    private array $dataRequestBody;
     private object $ProductRepository;
 
     /**
@@ -40,9 +40,7 @@ class ProductService
             throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
         }
 
-        if($return === null){
-            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_GENERIC);
-        }
+        $this->validateRequestReturn($return);
 
         return $return;
     }
@@ -56,18 +54,12 @@ class ProductService
         $resource = $this->data['resource'];
 
         if(in_array($resource, self::DELETE_RESOURCES, true)) {
-            if($this->data['sku'] !== null){
-                $return = $this->$resource();
-            } else {
-                throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_SKU_NECESSARY);
-            }
+            $return = $this->validateSku($resource);
         } else {
             throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
         }
 
-        if($return === null){
-            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_GENERIC);
-        }
+        $this->validateRequestReturn($return);
 
         return $return;
     }
@@ -86,9 +78,7 @@ class ProductService
             throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
         }
 
-        if($return === null){
-            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_GENERIC);
-        }
+        $this->validateRequestReturn($return);
 
         return $return;
     }
@@ -102,18 +92,12 @@ class ProductService
         $resource = $this->data['resource'];
 
         if(in_array($resource, self::PUT_RESOURCES, true)) {
-            if($this->data['sku'] !== null){
-                $return = $this->$resource();
-            } else {
-                throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_SKU_NECESSARY);
-            }
+            $return = $this->validateSku($resource);
         } else {
             throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
         }
 
-        if($return === null){
-            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_GENERIC);
-        }
+        $this->validateRequestReturn($return);
 
         return $return;
     }
@@ -133,6 +117,31 @@ class ProductService
     private function getOneByKey()
     {
         return $this->ProductRepository->getMySQL()->getOneByKey(self::TABLE, $this->data['sku']);
+    }
+
+    /**
+     * @param $return
+     * @return void
+     */
+    public function validateRequestReturn($return): void
+    {
+        if ($return === null) {
+            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_GENERIC);
+        }
+    }
+
+    /**
+     * @param string $resource
+     * @return mixed
+     */
+    public function validateSku(string $resource)
+    {
+        if ($this->data['sku'] !== null) {
+            $return = $this->$resource();
+        } else {
+            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_SKU_NECESSARY);
+        }
+        return $return;
     }
 
     /**
@@ -178,6 +187,9 @@ class ProductService
         throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_INSUFFICIENT_DATA);
     }
 
+    /**
+     * @return string
+     */
     private function update()
     {
         if($this->ProductRepository->updateProduct($this->data['sku'], $this->dataRequestBody) > 0){

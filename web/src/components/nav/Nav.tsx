@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import './Nav.scss';
 
 export default function Nav() {
-  let path = useLocation().pathname;
-  let [currentPage, setCurrentPage] = React.useState('');
+  let path: string = useLocation().pathname;
+  let [currentPage, setCurrentPage] = useState('');
 
   useEffect(() => {
     const title = () => {
@@ -20,11 +21,11 @@ export default function Nav() {
   }, [path]);
 
   return (
-    <nav>
-      <div>
+    <nav className='navbar'>
+      <div className='navTitle'>
         Product {currentPage}
       </div>
-      <div>
+      <div className='navLinks'>
         <ul>
           <li>
             {

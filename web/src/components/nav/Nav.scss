@@ -1,0 +1,32 @@
+.navbar {
+  position: fixed;
+  width: calc(100% - 100px);
+  margin: 0 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+
+  a {
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  ul {
+    list-style: none;
+  }
+  ul li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+}
+
+.navLinks{
+  ul li {
+    padding: 10px;
+  }
+}
+
+.navTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+}

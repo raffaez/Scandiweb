@@ -5,10 +5,10 @@ import { getAll } from '../../services/service';
 
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   async function getProduct() {
-    await getAll("/get", setProducts);
-    console.log(products);
+    await getAll("/get", setProducts).then(() => setIsLoading(false));
   }
 
   useEffect(() => {

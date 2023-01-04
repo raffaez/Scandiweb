@@ -14,24 +14,35 @@
   }
 }
 
-#helper-text {
+@mixin helper($visibility: hidden, $color: rgb(98, 98, 98)){
   margin: 10px;
-  color: rgb(98, 98, 98);
+  color: $color;
   font-size: .8rem;
+  visibility: $visibility;
 }
 
-.form-fields {
-  border-radius: 15px;
-  border: 1px solid #c5c1c0;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  padding: 24px 15px;
+.helper-text {
+  @include helper;
+  &--error {
+    @include helper(visible, red);
+  }
+  &--attributes {
+    @include helper(visible);
+  }
 }
 
-.Control-label {
-  color: #423e3d;
-  font-weight: bold;
-  transition: color 300ms ease;
+@mixin input-field($border-color: rgb(98, 98, 98)){
+  outline: none;
+  border: 1px solid $border-color;
+  border-radius: 5px;
+  padding: 5px;
+  width: 300px;
 }
 
+.input-field{
+  @include input-field;
+  &--error {
+    @include input-field;
+    border: 1px solid red;
+  }
+}

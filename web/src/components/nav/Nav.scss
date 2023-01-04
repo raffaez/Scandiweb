@@ -5,12 +5,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 2;
+  z-index: 1;
+  top: 0;
+  left: 0;
 
-  a {
-    text-decoration: none;
-    text-transform: uppercase;
-  }
   ul {
     list-style: none;
   }
@@ -20,13 +18,7 @@
   }
 }
 
-.navLinks{
-  ul li {
-    padding: 10px;
-  }
-}
-
-.navTitle {
+.nav-title {
   font-size: 1.5rem;
   font-weight: 700;
 }

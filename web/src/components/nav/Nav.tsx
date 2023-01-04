@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import './Nav.scss';
 
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 export default function Nav() {
+  const navigate = useNavigate();
   let path: string = useLocation().pathname;
-  let [currentPage, setCurrentPage] = useState('');
+  const [currentPage, setCurrentPage] = useState('');
 
   useEffect(() => {
     const title = () => {
@@ -20,26 +22,32 @@ export default function Nav() {
     setCurrentPage(title);
   }, [path]);
 
+  function goTo(page: string) {
+    return () => {
+      navigate(`/${page}`);
+    }
+  }
+
   return (
     <nav className='navbar'>
-      <div className='navTitle'>
+      <div className='nav-title'>
         Product {currentPage}
       </div>
-      <div className='navLinks'>
+      <div className='nav-links'>
         <ul>
           <li>
             {
               {
-                'List': <Link to="/add">Add</Link>,
-                'Add': <Link to="/">Save</Link>
+                'List': <button onClick={goTo('add')}>Add</button>,
+                'Add': <button type="submit" form="product_form">Save</button>
               }[currentPage]
             }
           </li>
           <li>
             {
               {
-                'List': <Link to="/">Mass delete</Link>,
-                'Add': <Link to="/">Cancel</Link>
+                'List': <button id="delete-product-btn">Mass delete</button>,
+                'Add': <button onClick={goTo('')}>Cancel</button>
               }[currentPage]
             }
           </li>

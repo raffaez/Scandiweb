@@ -1,0 +1,37 @@
+.product-add {
+  margin-top: 100px;
+  padding: 0 50px;
+}
+
+#product_form {
+  label {
+    display: block;
+    margin: 10px 0;
+    .input-label {
+      display: inline-block;
+      width: 150px;
+    }
+  }
+}
+
+#helper-text {
+  margin: 10px;
+  color: rgb(98, 98, 98);
+  font-size: .8rem;
+}
+
+.form-fields {
+  border-radius: 15px;
+  border: 1px solid #c5c1c0;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 15px;
+}
+
+.Control-label {
+  color: #423e3d;
+  font-weight: bold;
+  transition: color 300ms ease;
+}
+

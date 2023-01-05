@@ -1,14 +1,14 @@
 import './ProductAdd.scss';
 
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Product from '../../models/Product';
 import ProductSave from '../../models/ProductSave';
 import { getByKey, saveProduct } from '../../services/service';
-import { toast } from 'react-toastify';
 
 function ProductAdd() {
-  const [createdId, setCreatedId] = useState<string>('');
+  const navigate = useNavigate();
   const [product, setProduct] = useState<Product>({
     sku: '',
     name: '',
@@ -45,24 +45,38 @@ function ProductAdd() {
 
   useEffect(() => {
     validateSku();
-  }, [product]);
+  }, [product.sku]);
 
-  async function handleSubmit(e: ChangeEvent<HTMLFormElement>) {
-    e.preventDefault();
-
+  useEffect(() => {
     switch (product.type) {
       case 'BK':
         setProductSave({
           ...product,
           attribute: `${product.weight}KG`
         });
-        
-        await saveProduct("/post", productSave, setCreatedId);
-
-        toast.success(`${productSave.name} added successfully! ID: ${createdId}`);
+        break;
+      case 'DC':
+        setProductSave({
+          ...product,
+          attribute: `${product.size}MB`
+        });
+        break;
+      case 'FN':
+        setProductSave({
+          ...product,
+          attribute: `${product.height}x${product.width}x${product.length}`
+        });
+        break;
     }
+  }, [product]);
+
+  async function handleSubmit(e: ChangeEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    await saveProduct("/post", productSave);
+
+    navigate(0);
   }
-  
 
   return (
     <div className='product-add'>

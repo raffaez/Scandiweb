@@ -49,15 +49,13 @@ export default function ProductList() {
     navigate(0);
   }
 
-  
-
   return (
     <div className='product-list'>
       {
           products.map((product) => (
               <div className='product' key={product.sku}>
                 <div>
-                  <input type="checkbox" name="delete-checkbox" value={product.sku} id="delete-checkbox" onChange={(e) => handleCheck(e)}/>
+                  <input type="checkbox" name="delete-checkbox" value={product.sku} className="delete-checkbox" onChange={(e) => handleCheck(e)}/>
                 </div>
                 <div className='product-sku'>
                   {product.sku}

@@ -128,7 +128,7 @@ function ProductAdd() {
           >
             <option value="" disabled>Select a type</option>
             <option value="BK">Book</option>
-            <option value="DC">Disc</option>
+            <option value="DC">DVD</option>
             <option value="FN">Furniture</option>
           </select>
         </label>

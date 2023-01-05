@@ -46,7 +46,7 @@ export default function Nav() {
           <li>
             {
               {
-                'List': <button id="delete-product-btn">Mass delete</button>,
+                'List': <button type="submit" form="delete_form" id="delete-product-btn">Mass delete</button>,
                 'Add': <button onClick={goTo('')}>Cancel</button>
               }[currentPage]
             }

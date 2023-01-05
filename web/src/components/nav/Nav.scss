@@ -1,11 +1,14 @@
+$primary: #876CA9;
+$bg-color: #1D263B;
+
 .navbar {
-  position: fixed;
+  position: sticky;
   width: calc(100% - 100px);
   margin: 0 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1;
+  z-index: 9999;
   top: 0;
   left: 0;
 

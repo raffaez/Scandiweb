@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import ProductSave from '../models/ProductSave';
+import ProductDelete from '../models/ProductDelete';
 
 const api = axios.create({
   baseURL: 'http://localhost:80/ecommerce/server/products'
@@ -18,4 +19,9 @@ export const getByKey = async (route: string, key: string) => {
 
 export const saveProduct = async (route: string, data: ProductSave) => {
   await api.post(route, data);
+}
+
+export const deleteProducts = async (route: string, selectedProducts: ProductDelete[]) => {
+  const response = await api.post(route, selectedProducts);
+  return response.data.response;
 }

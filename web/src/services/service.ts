@@ -8,7 +8,7 @@ import ProductDelete from '../models/ProductDelete';
 // });
 
 const api = axios.create({
-  baseURL: 'http://juniortest-rafaelesouza.unaux.com/products'
+  baseURL: 'https://juniortest-rafaelesouza.unaux.com/products'
 })
 
 export const getAll = async (route: string, setData: React.Dispatch<React.SetStateAction<ProductSave[]>>) => {

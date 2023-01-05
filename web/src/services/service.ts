@@ -8,7 +8,7 @@ import ProductDelete from '../models/ProductDelete';
 // });
 
 const api = axios.create({
-  baseURL: 'https://juniortest-rafaelesouza.unaux.com/products'
+  baseURL: 'https://juniortest-rafaelesouza.000webhostapp.com/products'
 })
 
 export const getAll = async (route: string, setData: React.Dispatch<React.SetStateAction<ProductSave[]>>) => {
@@ -29,3 +29,21 @@ export const deleteProducts = async (route: string, selectedProducts: ProductDel
   const response = await api.post(route, selectedProducts);
   return response.data.response;
 }
+
+
+// const baseURL = 'https://juniortest-rafaelesouza.000webhostapp.com/products';
+
+// export const deleteProducts = async (route: string, selectedProducts: ProductDelete[]) => {
+//   const response = await fetch(`${baseURL}${route}`, {
+//     method: 'POST',
+//     headers: {
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(selectedProducts),
+//   });
+
+//   const data = await response.json();
+
+//   console.log(data);
+// }

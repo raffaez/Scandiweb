@@ -41,12 +41,12 @@ class RequestValidator
      */
     private function directRequest()
     {
-        if($this->request['method'] !== self::GET && $this->request['method'] !== self::DELETE){
+        if($this->request['method'] !== self::GET){
             $this->requestData = JsonUtil::handleRequestBodyJson();
         }
 
-        $method = $this->request['method'];
-        return $this->$method();
+        $resource = $this->request['resource'];
+        return $this->$resource();
     }
 
     /**
@@ -79,6 +79,7 @@ class RequestValidator
             switch ($this->request['route']){
                 case self::PRODUCTS:
                     $ProductService = new ProductService($this->request);
+                    $ProductService->setDataRequestBody($this->requestData);
                     $return = $ProductService->validateDelete();
                     break;
                 default:

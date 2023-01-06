@@ -5,14 +5,15 @@ namespace Service;
 use InvalidArgumentException;
 use Repository\ProductRepository;
 use Util\ConstantsUtil;
+use Validator\ProductValidator;
 
 class ProductService
 {
     public const TABLE = 'tb_products';
     public const GET_RESOURCES = ['get'];
     public const DELETE_RESOURCES = ['delete'];
-    public const POST_RESOURCES = ['create'];
-    public const PUT_RESOURCES = ['update'];
+    public const POST_RESOURCES = ['post'];
+    public const PUT_RESOURCES = ['put'];
     private array $data;
     private array $dataRequestBody;
     private object $ProductRepository;
@@ -54,7 +55,7 @@ class ProductService
         $resource = $this->data['resource'];
 
         if(in_array($resource, self::DELETE_RESOURCES, true)) {
-            $return = $this->validateSku($resource);
+            $return = $this->$resource();
         } else {
             throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_RESOURCE_NOTFOUND);
         }
@@ -116,7 +117,7 @@ class ProductService
      */
     private function getOneByKey()
     {
-        return $this->ProductRepository->getMySQL()->getOneByKey(self::TABLE, $this->data['sku']);
+        return $this->ProductRepository->getMySQL()->getOneOrFail(self::TABLE, $this->data['sku']);
     }
 
     /**
@@ -157,50 +158,50 @@ class ProductService
      */
     private function delete()
     {
-        return $this->ProductRepository->getMySQL()->delete(self::TABLE, $this->data['sku']);
+        foreach ($this->dataRequestBody as $data) {
+            $query = $this->ProductRepository->getMySQL()->delete(self::TABLE, $data['sku']);
+        }
+
+        return $query;
     }
 
     /**
      * @return array
      */
-    private function create()
+    private function post()
     {
+
+        $validator = new ProductValidator($this->dataRequestBody);
+
         $product = array(
-            "sku" => htmlspecialchars(strip_tags($this->dataRequestBody['sku'])),
-            "name" => htmlspecialchars(strip_tags($this->dataRequestBody['name'])),
-            "price" => htmlspecialchars(strip_tags($this->dataRequestBody['price'])),
-            "type" => htmlspecialchars(strip_tags($this->dataRequestBody['type'])),
-            "weight" => (float)htmlspecialchars(strip_tags($this->dataRequestBody['weight'])) ?? 0,
-            "size" => (float)htmlspecialchars(strip_tags($this->dataRequestBody['size'])) ?? 0,
-            "dimensions" => htmlspecialchars(strip_tags($this->dataRequestBody['dimensions'])) ?? ''
+            "sku" => $this->dataRequestBody['sku'],
+            "name" => $this->dataRequestBody['name'],
+            "price" => $this->dataRequestBody['price'],
+            "type" => $this->dataRequestBody['type'],
+            "attribute" => $this->dataRequestBody['attribute']
         );
 
-        if($product["sku"] && $product["name"] && $product["price"] && $product["type"]){
-            if($this->ProductRepository->insertProduct($product)){
-                $insertedId = $this->ProductRepository->getMySQL()->getDb()->lastInsertId();
-                $this->ProductRepository->getMySQL()->getDb()->commit();
-                return ['insertedId' => $insertedId];
-            }
-
-            $this->ProductRepository->getMySQL()->getDb()->rollBack();
-
-            throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_GENERIC);
+        if($this->ProductRepository->insertProduct($product)){
+            $insertedId = $this->ProductRepository->getMySQL()->getDb()->lastInsertId();
+            $this->ProductRepository->getMySQL()->getDb()->commit();
+            return ['insertedId' => $insertedId];
         }
 
-        throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_INSUFFICIENT_DATA);
+        $this->ProductRepository->getMySQL()->getDb()->rollBack();
+
+        throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_GENERIC);
     }
 
     /**
      * @return string
      */
-    private function update()
+    private function put()
     {
         $product = array(
-            "name" => htmlspecialchars(strip_tags($this->dataRequestBody['name'])),
-            "price" => htmlspecialchars(strip_tags($this->dataRequestBody['price'])),
-            "weight" => (float)htmlspecialchars(strip_tags($this->dataRequestBody['weight'])) ?? 0,
-            "size" => (float)htmlspecialchars(strip_tags($this->dataRequestBody['size'])) ?? 0,
-            "dimensions" => htmlspecialchars(strip_tags($this->dataRequestBody['dimensions'])) ?? ''
+            "name" => $this->dataRequestBody['name'],
+            "price" => $this->dataRequestBody['price'],
+            "type" => $this->dataRequestBody['type'],
+            "attribute" => $this->dataRequestBody['attribute']
         );
 
         if($this->ProductRepository->updateProduct($this->data['sku'], $product) > 0){

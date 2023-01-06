@@ -129,7 +129,6 @@ function ProductAdd() {
         <form id='product_form' onSubmit={handleSubmit}>
           {
             FORM_FIELDS.map((field) => (
-              <>
               <label key={field.name}>
                 <span className='input-label'>{field.title}*</span>
                 <input
@@ -147,7 +146,6 @@ function ProductAdd() {
                   {field.name==='sku'&&invalidSku?field.helperText2:field.helperText}
                 </span>
               </label>
-              </>
             ))
           }
 

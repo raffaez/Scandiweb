@@ -160,9 +160,9 @@ function ProductAdd() {
             required
             >
               <option value="" disabled>Select a type</option>
-              <option value="BK">Book</option>
-              <option value="DC">DVD</option>
-              <option value="FN">Furniture</option>
+              <option id="Book" value="BK">Book</option>
+              <option id="DVD" value="DC">DVD</option>
+              <option id="Furniture" value="FN">Furniture</option>
             </select>
             <span className={invalidFields.includes('type')?"helper-text--error":"helper-text"}>Please select a type.</span>
           </label>

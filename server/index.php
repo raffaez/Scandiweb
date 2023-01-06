@@ -7,6 +7,8 @@ use Validator\RequestValidator;
 
 include 'bootstrap.php';
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
 
 try {
     $RequestValidator = new RequestValidator(RoutesUtil::getRoutes());

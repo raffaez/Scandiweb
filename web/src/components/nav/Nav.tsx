@@ -38,7 +38,7 @@ export default function Nav() {
           <li>
             {
               {
-                'List': <button onClick={goTo('add')}>ADD</button>,
+                'List': <button onClick={goTo('add-product')}>ADD</button>,
                 'Add': <button type="submit" form="product_form">Save</button>
               }[currentPage]
             }

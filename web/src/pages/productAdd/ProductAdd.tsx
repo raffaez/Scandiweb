@@ -32,7 +32,11 @@ function ProductAdd() {
   const [invalidFields, setInvalidField] = useState<string[]>([]);
 
   async function validateSku() {
-    if(product.sku === "") return;
+    if(product.sku === ""){
+      setInvalidSku(false);
+      return;
+    }
+    
     if(await getByKey("/get", product.sku)){
       setInvalidSku(true);
     }else{
@@ -121,7 +125,6 @@ function ProductAdd() {
   ];
 
   return (
-    <>
     <div className='product-add'>
         <form id='product_form' onSubmit={handleSubmit}>
           {
@@ -135,11 +138,14 @@ function ProductAdd() {
                   {...field.name === 'price' ? {step:".01", min:"0.01"} :''}
                   onInput={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
                   onBlur={(e: ChangeEvent<HTMLInputElement>) => validate(e)}
-                  className={invalidFields.includes(field.name)?"input-field--error":"input-field"}
+                  className={invalidFields.includes(field.name)||(field.name==='sku'&&invalidSku)?"input-field--error":"input-field"}
                   required
                 />
-                <span className={invalidFields.includes(field.name)?"helper-text--error":"helper-text"}>{field.helperText}</span>
-                {field.name === 'sku' ? <span className={invalidSku?"helper-text--error":"helper-text"}>{field.helperText2}</span> :''}
+                <span
+                className={invalidFields.includes(field.name)||(field.name==='sku'&&invalidSku)?"helper-text--error":"helper-text"}
+                >
+                  {field.name==='sku'&&invalidSku?field.helperText2:field.helperText}
+                </span>
               </label>
               </>
             ))
@@ -255,7 +261,6 @@ function ProductAdd() {
           }
         </form>
     </div>
-    </>
   )
 }
 

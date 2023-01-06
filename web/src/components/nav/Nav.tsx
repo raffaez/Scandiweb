@@ -13,7 +13,7 @@ export default function Nav() {
       switch (path) {
         case '/':
           return 'List';
-        case '/add':
+        case '/add-product':
           return 'Add';
         default:
           return '';

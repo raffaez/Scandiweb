@@ -4,7 +4,7 @@ import ProductSave from '../models/ProductSave';
 import ProductDelete from '../models/ProductDelete';
 
 // const api = axios.create({
-//   baseURL: 'http://localhost:80/ecommerce/server/products'
+//   baseURL: 'http://localhost:80/Scandiweb/server/products'
 // });
 
 const api = axios.create({

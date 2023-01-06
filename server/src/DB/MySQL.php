@@ -79,7 +79,7 @@ class MySQL
      * @param $sku
      * @return mixed
      */
-    public function getOneByKey($table, $sku)
+    public function getOneOrFail($table, $sku)
     {
         if ($table && $sku) {
             $query = 'SELECT * FROM ' . $table . ' WHERE sku = :sku';
@@ -94,6 +94,22 @@ class MySQL
         }
 
         throw new InvalidArgumentException(ConstantsUtil::MSG_ERROR_SKU_NECESSARY);
+    }
+
+    public function getOneByKey($table, $sku)
+    {
+        if ($table && $sku) {
+            $query = 'SELECT * FROM ' . $table . ' WHERE sku = :sku';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':sku', $sku);
+            $stmt->execute();
+            $totalResult = $stmt->rowCount();
+
+            if ($totalResult === 1) {
+                return true;
+            }
+            return false;
+        }
     }
 
     /**

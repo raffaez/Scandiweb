@@ -20,11 +20,16 @@ abstract class ConstantsUtil
     public const MSG_ERROR_EMPTY_JSON = 'Empty request body!';
 
     /* SUCCESS */
-    public const MSG_SUCCESS_DELETE = 'Record successfully deleted!';
+    public const MSG_SUCCESS_DELETE = 'Records successfully deleted!';
     public const MSG_SUCCESS_UPDATE = 'Record successfully updated!';
 
     /* RESOURCE PRODUCTS */
     public const MSG_ERROR_SKU_NECESSARY = 'Sku necessary!';
+    public const MSG_ERROR_INVALID_SKU = 'Invalid SKU or already taken!';
+    public const MSG_ERROR_INVALID_NAME = 'Invalid name!';
+    public const MSG_ERROR_INVALID_PRICE = 'Invalid price!';
+    public const MSG_ERROR_INVALID_TYPE = 'Invalid type!';
+    public const MSG_ERROR_INVALID_ATTRIBUTE = 'Invalid attribute!';
     public const MSG_ERROR_INSUFFICIENT_DATA = 'Insufficient data!';
 
     /* RETURN JSON */

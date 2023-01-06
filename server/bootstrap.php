@@ -5,9 +5,9 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ERROR);
 
 define('HOST', 'localhost');
-define('DATABASE', 'phpapidb');
+define('DATABASE', 'phpapi');
 define('USER', 'root');
-define('PASSWORD', '');
+define('PASSWORD', '14253500');
 
 define('DS', DIRECTORY_SEPARATOR);
 define('DIR_APP', __DIR__);

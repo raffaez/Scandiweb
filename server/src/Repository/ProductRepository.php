@@ -28,18 +28,16 @@ class ProductRepository
     {
         $queryInsert = "INSERT INTO "
                             . self::TABLE .
-                            " (sku, name, price, type, size, weight, dimensions) 
+                            " (sku, name, price, type, attribute) 
                         VALUES 
-                            (:sku, :name, :price, :type, :size, :weight, :dimensions)";
+                            (:sku, :name, :price, :type, :attribute)";
         $this->MySQL->getDb()->beginTransaction();
         $stmt = $this->MySQL->getDb()->prepare($queryInsert);
         $stmt->bindParam(":sku", $product["sku"]);
         $stmt->bindParam(":name", $product["name"]);
         $stmt->bindParam(":price", $product["price"]);
         $stmt->bindParam(":type", $product["type"]);
-        $stmt->bindParam(":size", $product["size"]);
-        $stmt->bindParam(":weight", $product["weight"]);
-        $stmt->bindParam(":dimensions", $product["dimensions"]);
+        $stmt->bindParam(":attribute", $product["attribute"]);
 
         $stmt->execute();
 

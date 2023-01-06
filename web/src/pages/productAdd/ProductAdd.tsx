@@ -29,6 +29,7 @@ function ProductAdd() {
   });
 
   const [invalidSku, setInvalidSku] = useState<boolean>(false);
+  const [invalidFields, setInvalidField] = useState<string[]>([]);
 
   async function validateSku() {
     if(product.sku === "") return;
@@ -39,8 +40,21 @@ function ProductAdd() {
     }
   }
 
+  function validate(e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) {
+    if(e.target.value === "" || parseFloat(e.target.value) <= 0){
+      if(!invalidFields.includes(e.target.name)){
+        setInvalidField([...invalidFields, e.target.name]);
+      }
+    }else{
+      let newInvalidFields = invalidFields.filter((field) => field !== e.target.name);
+      setInvalidField(newInvalidFields);
+    }
+  }
+
   function handleChange(e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) {
     setProduct({ ...product, [e.target.name]: e.target.value });
+
+    validate(e);
   }
 
   useEffect(() => {
@@ -78,150 +92,172 @@ function ProductAdd() {
     navigate(0);
   }
 
+  const FORM_FIELDS = [
+    {
+      title: "SKU",
+      name: "sku",
+      type: "text",
+      placeholder: "SKU001",
+      value: product.sku,
+      helperText: "Please enter an SKU.",
+      helperText2: "This SKU is already taken.",
+    },
+    {
+      title: "Name",
+      name: "name",
+      type: "text",
+      placeholder: "How to Catch an Elf",
+      value: product.name,
+      helperText: "Please enter a name.",
+    },
+    {
+      title: "Price ($)",
+      name: "price",
+      type: "number",
+      placeholder: "19.99",
+      value: product.price,
+      helperText: "Please enter a valid price.",
+    },
+  ];
+
   return (
+    <>
     <div className='product-add'>
-      <form id='product_form' onSubmit={handleSubmit}>
-        <label>
-          <span className='input-label'>SKU*</span>
-          <input
-            type="text" name="sku" id="sku" placeholder="SKU001"
-            value={product.sku}
-            onInput={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-            className={invalidSku?"input-field--error":"input-field"}
-            required
-          />
-          <span className={invalidSku?"helper-text--error":"helper-text"}>This SKU is already taken.</span>
-        </label>
-
-        <label>
-          <span className='input-label'>Name*</span>
-          <input
-            type="text" name="name" id="name"
-            placeholder="How to Catch an Elf" 
-            value={product.name} onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-            className="input-field"
-            required
-          />
-        </label>
-
-        <label>
-          <span className='input-label'>Price ($)*</span>
-          <input
-          type="number" name="price" id="price"
-          value={product.price}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-          step=".01" min="0.01"
-          className="input-field"
-          required
-          />
-          <span className="helper-text--attributes">Price must be a value {`>`} 0.</span>
-        </label>
-
-        <label>
-          <span className='input-label'>Type switcher*</span>
-          <select
-          name="type" id="productType" 
-          value={product.type} 
-          onChange={(e: ChangeEvent<HTMLSelectElement>) => handleChange(e)}
-          className="input-field"
-          required
-          >
-            <option value="" disabled>Select a type</option>
-            <option value="BK">Book</option>
-            <option value="DC">DVD</option>
-            <option value="FN">Furniture</option>
-          </select>
-        </label>
-
-        {
+        <form id='product_form' onSubmit={handleSubmit}>
           {
-            'BK': (
+            FORM_FIELDS.map((field) => (
               <>
-                <label>
-                  <span className='input-label'>Weight (kg)*</span>
-                  <input
-                    type="number" name="weight" id="weight"
-                    placeholder="1"
-                    value={product.weight}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-                    step=".01" min="0.01"
-                    className="input-field"
-                    required
-                  />
-                  <span className="helper-text--attributes">The weight must be a value {`>`} 0.</span>
-                </label>
+              <label key={field.name}>
+                <span className='input-label'>{field.title}*</span>
+                <input
+                  type={field.type} name={field.name} id={field.name} placeholder={field.placeholder}
+                  value={field.value===0 || field.value === '' ?'':field.value}
+                  {...field.name === 'price' ? {step:".01", min:"0.01"} :''}
+                  onInput={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+                  onBlur={(e: ChangeEvent<HTMLInputElement>) => validate(e)}
+                  className={invalidFields.includes(field.name)?"input-field--error":"input-field"}
+                  required
+                />
+                <span className={invalidFields.includes(field.name)?"helper-text--error":"helper-text"}>{field.helperText}</span>
+                {field.name === 'sku' ? <span className={invalidSku?"helper-text--error":"helper-text"}>{field.helperText2}</span> :''}
+              </label>
               </>
-            ),
+            ))
+          }
 
-            'DC': (
-              <>
-                <label>
-                  <span className='input-label'>Size (MB)*</span>
-                  <input
-                    type="number" name="size" id="size"
-                    placeholder="1024"
-                    value={product.size}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-                    min="1"
-                    className="input-field"
-                    required
-                  />
-                  <span className="helper-text--attributes">The size must be a value {`>`} 0.</span>
-                </label>
-              </>
-            ),
+          <label>
+            <span className='input-label'>Type switcher*</span>
+            <select
+            name="type" id="productType" 
+            value={product.type} 
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => handleChange(e)}
+            onBlur={(e: ChangeEvent<HTMLSelectElement>) => validate(e)}
+            className={invalidFields.includes('type')?"input-field--error":"input-field"}
+            required
+            >
+              <option value="" disabled>Select a type</option>
+              <option value="BK">Book</option>
+              <option value="DC">DVD</option>
+              <option value="FN">Furniture</option>
+            </select>
+            <span className={invalidFields.includes('type')?"helper-text--error":"helper-text"}>Please select a type.</span>
+          </label>
 
-            'FN': (
-              <>
-                <label>
-                  <span className='input-label'>Height (cm)*</span>
-                  <input
-                    type="number" name="height" id="height"
-                    placeholder="100"
-                    value={product.height}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-                    min="1"
-                    className="input-field"
-                    required
-                  />
-                  <span className="helper-text--attributes">The height must be a value {`>`} 0.</span>
-                </label>
-                
-                <label>
-                  <span className='input-label'>Width (cm)*</span>
-                  <input
-                    type="number" name="width" id="width"
-                    placeholder="100"
-                    value={product.width}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-                    min="1"
-                    className="input-field"
-                    required
-                  />
-                  <span className="helper-text--attributes">The width must be a value {`>`} 0.</span>
-                </label>
-                
-                <label>
-                  <span className='input-label'>Length (cm)*</span>
-                  <input
-                    type="number" name="length" id="length"
-                    placeholder="100"
-                    value={product.length}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-                    min="1"
-                    className="input-field"
-                    required
-                  />
-                  <span className="helper-text--attributes">The length must be a value {`>`} 0.</span>
-                </label>
-              </>
-            )
+          {
+            {
+              'BK': (
+                <>
+                  <label>
+                    <span className='input-label'>Weight (kg)*</span>
+                    <input
+                      type="number" name="weight" id="weight"
+                      placeholder="1.5"
+                      step=".01" min="0.01"
+                      value={product.weight===0?'':product.weight}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+                      onBlur={(e: ChangeEvent<HTMLInputElement>) => validate(e)}
+                      className={invalidFields.includes('weight')?"input-field--error":"input-field"}
+                      required
+                    />
+                    <span className={invalidFields.includes('weight')?"helper-text--error":"helper-text"}>Please enter a valid weight in KG.</span>
+                  </label>
+                </>
+              ),
 
-          }[product.type]
-        }
-      </form>
+              'DC': (
+                <>
+                  <label>
+                    <span className='input-label'>Size (MB)*</span>
+                    <input
+                      type="number" name="size" id="size"
+                      placeholder="1024"
+                      step="1" min="1"
+                      value={product.size===0?'':product.size}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+                      onBlur={(e: ChangeEvent<HTMLInputElement>) => validate(e)}
+                      className={invalidFields.includes('size')?"input-field--error":"input-field"}
+                      required
+                    /><span className={invalidFields.includes('size')?"helper-text--error":"helper-text"}>Please enter a valid size in MB.</span>
+                  </label>
+                </>
+              ),
+
+              'FN': (
+                <>
+                  <label>
+                    <span className='input-label'>Height (cm)*</span>
+                    <input
+                      type="number" name="height" id="height"
+                      placeholder="100"
+                      step="0.01" min="0.01"
+                      value={product.height===0?'':product.height}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+                      onBlur={(e: ChangeEvent<HTMLInputElement>) => validate(e)}
+                      className={invalidFields.includes('height')?"input-field--error":"input-field"}
+                      required
+                    />
+                    <span className={invalidFields.includes('height')?"helper-text--error":"helper-text"}>Please enter a valid height in CM.</span>
+                  </label>
+                  
+                  <label>
+                    <span className='input-label'>Width (cm)*</span>
+                    <input
+                      type="number" name="width" id="width"
+                      placeholder="100"
+                      step="0.01" min="0.01"
+                      value={product.width===0?'':product.width}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+                      onBlur={(e: ChangeEvent<HTMLInputElement>) => validate(e)}
+                      className={invalidFields.includes('width')?"input-field--error":"input-field"}
+                      required
+                    />
+                    <span className={invalidFields.includes('width')?"helper-text--error":"helper-text"}>Please enter a valid width in CM.</span>
+                  </label>
+                  
+                  <label>
+                    <span className='input-label'>Length (cm)*</span>
+                    <input
+                      type="number" name="length" id="length"
+                      placeholder="100"
+                      step="0.01" min="0.01"
+                      value={product.length===0?'':product.length}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+                      onBlur={(e: ChangeEvent<HTMLInputElement>) => validate(e)}
+                      className={invalidFields.includes('length')?"input-field--error":"input-field"}
+                      required
+                    />
+                    <span className={invalidFields.includes('length')?"helper-text--error":"helper-text"}>Please enter a valid length in CM.</span>
+                  </label>
+                </>
+              )
+
+            }[product.type]
+          }
+        </form>
     </div>
+    </>
   )
 }
 
 export default ProductAdd
+
